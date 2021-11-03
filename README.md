@@ -1,2 +1,74 @@
-# DSRE
-Resources for the paper "A Simple, Strong and Robust Baseline for Distantly Supervised Relation Extraction"
+## Official Code for "A Simple, Strong and Robust Baseline for Distantly Supervised Relation Extraction"
+
+![Diagram representing our model](./figure/model_diagram.png "Diagram representing our model")
+
+Please follow the following steps (one by one) to reproduce the results presented in our pre-print:
+
+### 1. Environment Setup
+* Our codebase is tested on Python 3.6.13. We recommend creating a conda environment using the command given below.
+```
+conda create --name your_env_name python=3.6.13
+```
+
+* Our codebase is tested on GPUs with cuda version >= 10.2. Please install all of the dependencies using the command given below in the topmost directory (which contains the requirements.txt file)
+
+```
+pip install -r requirements.txt
+```
+
+### 2. Downloading Datasets
+* We present results on four open-source datasets: NYT-10d, NYT-10m, Wiki-20m and DiS-ReX. To reproduce results on each of these datasets, we provide scripts in the "benchmark" folder to download them.
+* For downloading NYT-10d, use the following command inside the benchmark folder
+```
+sh download_nyt10.sh
+```
+* For downloading NYT-10m, use the following command inside the benchmark folder
+```
+sh download_nyt10m.sh
+```
+* For downloading Wiki-20m, use the following command inside the benchmark folder
+```
+sh download_wiki20m.sh
+```
+* For downloading DiS-ReX, use the following command inside the benchmark folder
+```
+sh download_disrex.sh
+```
+
+### 3. Training and testing models
+
+* Training scripts are provided in the topmost directory for each of the four datasets. Once the training finishes, the best saved model would automatically be tested on the test set (returning AUC, Macro F1, Micro F1, and P@M)
+* To reproduce results on NYT-10d, run
+```
+sh train_nyt10d.sh
+```
+* To reproduce results on NYT-10m, run
+```
+sh train_nyt10m.sh
+```
+* To reproduce results on Wiki-20m, run
+```
+sh train_wiki20m.sh
+```
+* To reproduce results on DiS-ReX, run
+```
+sh train_disrex.sh
+```
+
+### Cite
+The codebase is a part of the pre-print [A Simple, Strong and Robust Baseline for Distantly Supervised Relation Extraction](https://arxiv.org/abs/2110.07415). If you use or extend our work, please cite the following paper:
+```
+@misc{rathore2021simple,
+      title={A Simple, Strong and Robust Baseline for Distantly Supervised Relation Extraction}, 
+      author={Vipul Rathore and Kartikeya Badola and Mausam and Parag Singla},
+      year={2021},
+      eprint={2110.07415},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```
+
+### Acknowledgements
+The structure of our codebase closely follows that of [OpenNRE's](https://aclanthology.org/D19-3029.pdf). For more details on the format of the dataset's used, we refer the user to their [repository](https://github.com/thunlp/OpenNRE).
+
+For more details on the DiS-ReX dataset, we refer the user to their [pre-print](https://arxiv.org/abs/2104.08655) as well as their [repository](https://github.com/dair-iitd/DiS-ReX).
