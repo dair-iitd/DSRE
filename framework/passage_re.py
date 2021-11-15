@@ -3,6 +3,7 @@ from torch import nn, optim
 from .data_loader import PassageRELoader
 from .utils import AverageMeter
 from tqdm import tqdm
+import pdb
 
 class PassageRE(nn.Module):
 
@@ -17,7 +18,8 @@ class PassageRE(nn.Module):
                  lr=2e-5,
                  weight_decay=1e-5,
                  opt='adamw',
-                 warmup_step=0):
+                 warmup_step=0,
+                 devices=[0,1]):
 
         super().__init__()
         self.max_epoch = max_epoch
@@ -46,9 +48,9 @@ class PassageRE(nn.Module):
                 batch_size = batch_size,
                 shuffle = False)
         # Model
-        self.device=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.model = nn.DataParallel(model)
-        self.model = self.model.to(self.device)
+        self.device=torch.device('cuda:{}'.format(devices[0]))
+        self.model = nn.DataParallel(model, device_ids=devices)
+        self.model.to(self.device)
         self.criterion = torch.nn.BCELoss(reduction='sum')
         # Params and optimizer
         params = self.model.parameters()

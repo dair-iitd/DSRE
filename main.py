@@ -45,6 +45,13 @@ parser.add_argument('--save_name', default='', type=str,
         help='name for saving checkpoint')
 parser.add_argument('--seed', default=772, type=int,
         help='random seed')
+parser.add_argument(
+  "--devs",  
+  nargs="*",
+  type=int,
+  default=[0,1],
+  help='list of gpu ids on which model needs to be run'
+)
 
 args = parser.parse_args()
 import os
@@ -57,6 +64,10 @@ def seed_everything(seed=1234):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
+import random
+MIN=0
+MAX=random.randint(0, 1000000)
+SEED=random.randint(MIN, MAX)
 seed_everything(seed=args.seed)
 
 # Some basic settings
@@ -95,7 +106,8 @@ framework_ = framework.PassageRE(
     lr=args.lr,
     weight_decay=args.weight_decay,
     opt='adamw',
-    warmup_step = 30000 // args.batch_size)
+    warmup_step = 30000 // args.batch_size,
+    devices = args.devs)
 
 if not args.only_test:
     framework_.train_model(args.metric)
@@ -104,6 +116,7 @@ if not args.only_test:
 framework_.load_state_dict(torch.load(ckpt)['state_dict'])
 result = framework_.eval_model(framework_.test_loader)
 # Print the result
+print(result)
 print('Test set results for ckpt = ' +str(ckpt)+ ' are:')
 print("AUC: %.4f" % result['auc'])
 print("Average P@M: %.4f" % result['avg_p300'])

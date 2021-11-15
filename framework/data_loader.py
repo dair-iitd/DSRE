@@ -16,12 +16,12 @@ class PassageREDataset(data.Dataset):
             rel2id: dictionary of relation->id mapping
             tokenizer: function of tokenizing
         """
-        seed = 42
-        random.seed(seed)
-        np.random.seed(seed)
-        torch.manual_seed(seed)
-        torch.cuda.manual_seed(seed)
-        torch.backends.cudnn.deterministic = True
+        #seed = 42
+        #random.seed(seed)
+        #np.random.seed(seed)
+        #torch.manual_seed(seed)
+        #torch.cuda.manual_seed(seed)
+        #torch.backends.cudnn.deterministic = True
 
         super().__init__()
         self.tokenizer = tokenizer
@@ -51,17 +51,25 @@ class PassageREDataset(data.Dataset):
         self.name2id = {}
         self.bag_name = []
         self.facts = {}
+        self.bag2sents = []
         for idx, item in enumerate(self.data):
             fact = (item['h']['id'], item['t']['id'],item['relation']) 
             if item['relation'] != 'NA':
                 self.facts[fact] = 1
             name = (item['h']['id'], item['t']['id'])
+            if 'text' in item:
+                sent = item['text'].lower().strip()
+            else:
+                sent = ' '.join(item['token']).lower().strip()
             if name not in self.name2id:
                 self.name2id[name] = len(self.name2id)
                 self.bag_scope.append([])
                 self.rel_scope.append(set())
                 self.bag_name.append(name)
-            self.bag_scope[self.name2id[name]].append(idx)
+                self.bag2sents.append(set())
+            if sent not in self.bag2sents[self.name2id[name]]:
+                self.bag_scope[self.name2id[name]].append(idx)
+                self.bag2sents[self.name2id[name]].add(sent)
             rel_id = self.rel2id[item['relation']]
             if rel_id not in self.rel_scope[self.name2id[name]]:
                 self.rel_scope[self.name2id[name]].add(rel_id)
@@ -96,6 +104,63 @@ class PassageREDataset(data.Dataset):
             seqs[i] = torch.stack(seqs[i], 0)  # (batch, bag, L)
         return [label, bag_name] + seqs
 
+    # def eval(self, pred_result):
+    #     """
+    #     Args:
+    #         pred_result: a list with dict {'entpair': (head_id, tail_id), 'relation': rel, 'score': score}.
+    #             Note that relation of NA should be excluded.
+    #     Return:
+    #         {'prec': narray[...], 'rec': narray[...], 'mean_prec': xx, 'f1': xx, 'auc': xx}
+    #             prec (precision) and rec (recall) are in micro style.
+    #             prec (precision) and rec (recall) are sorted in the decreasing order of the score.
+    #             f1 is the max f1 score of those precison-recall points
+    #     """
+    #     sorted_pred_result = sorted(pred_result, key=lambda x: x['score'], reverse=True)
+    #     prec = []
+    #     rec = []
+    #     correct = 0
+    #     total = len(self.facts)
+    #     P_10R = False  # To check if recall has reached 0.1
+    #     P_30R = False  # To check if recall has reached 0.3
+    #     p10_val = 0.0
+    #     p30_val = 0.0
+    #     for i, item in enumerate(sorted_pred_result):
+    #         if (item['entpair'][0], item['entpair'][1], item['relation']) in self.facts:
+    #             correct += 1
+    #         prec_temp = float(correct) / float(i + 1)
+    #         prec.append(prec_temp)
+    #         rec_temp = float(correct) / float(total)
+    #         rec.append(rec_temp)
+    #         if not P_10R:
+    #             if rec_temp >= 0.1:
+    #                 p10_val = prec_temp
+    #                 P_10R = True
+    #         if not P_30R:
+    #             if rec_temp >= 0.3:
+    #                 p30_val = prec_temp
+    #                 P_30R = True
+    #     auc = np.around(sklearn.metrics.auc(x=rec, y=prec), 4)
+    #     np_prec = np.array(prec)
+    #     np_rec = np.array(rec)
+    #     max_f1 = (2 * np_prec * np_rec / (np_prec + np_rec + 1e-20)).max()
+
+    #     def prec_at_n(n):
+    #         correct = 0
+    #         for i, item in enumerate(sorted_pred_result[:n]):
+    #             if (item['entpair'][0], item['entpair'][1], item['relation']) in self.facts:
+    #                 correct += 1
+    #         return (correct / n)
+    #     prec_at_all = prec_at_n(len(sorted_pred_result))
+    #     prec_at_100 = prec_at_n(100)
+    #     prec_at_200 = prec_at_n(200)
+    #     prec_at_300 = prec_at_n(300)
+    #     mean_prec = np_prec.mean()
+    #     # return {'micro_p': np_prec, 'micro_r': np_rec, 'micro_p_mean': mean_prec, 'micro_f1': f1, 'auc': auc,
+    #     #         'p@10': p10_val, 'p@30': p30_val}
+    #     return {'prec': prec, 'rec': rec, 'auc': auc, 'p@all': prec_at_all, 'p@100': prec_at_100,
+    #             'p@200': prec_at_200, 'p@300': prec_at_300,'max_f1':max_f1, 'p@r10': p10_val, 'p@r30': p30_val}
+
+    
     def eval(self, pred_result, threshold=0.5):
         """
         Args:
@@ -136,7 +201,11 @@ class PassageREDataset(data.Dataset):
             
         auc = sklearn.metrics.auc(x=rec, y=prec)
         np_prec = np.array(prec)
-        np_rec = np.array(rec) 
+        np_rec = np.array(rec)
+        with open('rec.npy', 'wb') as f:
+            np.save(f, np_rec)
+        with open('prec.npy', 'wb') as f:
+            np.save(f, np_prec)
         max_micro_f1 = (2 * np_prec * np_rec / (np_prec + np_rec + 1e-20)).max()
         best_threshold = sorted_pred_result[(2 * np_prec * np_rec / (np_prec + np_rec + 1e-20)).argmax()]['score']
         mean_prec = np_prec.mean()

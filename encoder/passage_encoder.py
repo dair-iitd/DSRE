@@ -59,11 +59,12 @@ class PassageEncoder(nn.Module):
                 sent_temp = " ".join(sentence)
 
             if self.mask_entity:
-                ent0 = ['[unused4]'] if not rev else ['[unused5]']
-                ent1 = ['[unused5]'] if not rev else ['[unused4]']
+                #print("Mask")
+                ent0 = ['[unused5]'] if not rev else ['[unused6]']
+                ent1 = ['[unused6]'] if not rev else ['[unused5]']
             else:
-                ent0 = ['[unused0]'] + ent0 + ['[unused1]'] if not rev else ['[unused2]'] + ent0 + ['[unused3]']
-                ent1 = ['[unused2]'] + ent1 + ['[unused3]'] if not rev else ['[unused0]'] + ent1 + ['[unused1]']
+                ent0 = ['[unused1]'] + ent0 + ['[unused2]'] if not rev else ['[unused3]'] + ent0 + ['[unused4]']
+                ent1 = ['[unused3]'] + ent1 + ['[unused4]'] if not rev else ['[unused1]'] + ent1 + ['[unused2]']
 
             if it == 0:
                 re_tokens = ['[CLS]'] + sent0 + ent0 + sent1 + ent1 + sent2 + ['[SEP]']
