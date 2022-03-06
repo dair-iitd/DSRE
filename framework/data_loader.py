@@ -187,13 +187,16 @@ class PassageREDataset(data.Dataset):
                 entpair[idtf] = {
                     'label': np.zeros((len(self.rel2id)), dtype=np.int),
                     'pred': np.zeros((len(self.rel2id)), dtype=np.int),
-                    'score': np.zeros((len(self.rel2id)), dtype=np.float)
+                    'score': np.zeros((len(self.rel2id)), dtype=np.float),
+                    'prediction':[]
                 }
             if (item['entpair'][0], item['entpair'][1], item['relation']) in self.facts:
                 correct += 1
                 entpair[idtf]['label'][self.rel2id[item['relation']]] = 1
             if item['score'] >= threshold:
                 entpair[idtf]['pred'][self.rel2id[item['relation']]] = 1
+                if item['relation'] not in entpair[idtf]['prediction']:
+                	entpair[idtf]['prediction'].append(item['relation'])
             entpair[idtf]['score'][self.rel2id[item['relation']]] = item['score']
 
             prec.append(float(correct) / float(i + 1))
@@ -236,7 +239,7 @@ class PassageREDataset(data.Dataset):
             if rel != 'NA':
                 max_micro_f1_each_relation[rel] = sklearn.metrics.f1_score(label_vec, pred_result_vec, labels=[self.rel2id[rel]], average='micro')
 
-        return {'np_prec': np_prec, 'np_rec': np_rec, 'max_micro_f1': max_micro_f1, 'max_macro_f1': max_macro_f1, 'auc': auc, 'p@100': np_prec[99], 'p@200': np_prec[199], 'p@300': np_prec[299], 'avg_p300': (np_prec[99] + np_prec[199] + np_prec[299]) / 3, 'micro_f1': micro_f1, 'macro_f1': macro_f1, 'max_micro_f1_each_relation': max_micro_f1_each_relation}
+        return {'np_prec': np_prec, 'np_rec': np_rec, 'max_micro_f1': max_micro_f1, 'max_macro_f1': max_macro_f1, 'auc': auc, 'p@100': np_prec[99], 'p@200': np_prec[199], 'p@300': np_prec[299], 'avg_p300': (np_prec[99] + np_prec[199] + np_prec[299]) / 3, 'micro_f1': micro_f1, 'macro_f1': macro_f1, 'max_micro_f1_each_relation': max_micro_f1_each_relation, 'pred':entpair}
 
 
 def PassageRELoader(path, rel2id, tokenizer, batch_size, shuffle, num_workers=1):

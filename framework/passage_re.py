@@ -166,9 +166,10 @@ class PassageRE(nn.Module):
                 
                 for i in range(logits.shape[0]):
                     for relid in range(self.model.module.num_class):
-                        if self.model.module.id2rel[relid] != 'NA':
-                            pred_result.append({'entpair': bag_name[i][:2], 'relation': self.model.module.id2rel[relid],
-                                                'score': logits[i][relid].item()})
+                    	if self.model.module.id2rel[relid] != 'NA':
+                            pred_result.append({'entpair': bag_name[i][:2], 'relation': self.model.module.id2rel[relid],'score': logits[i][relid].item()})
+                    	#pred_result.append({'entpair': bag_name[i][:2], 'relation': self.model.module.id2rel[relid],
+                       #                       'score': logits[i][relid].item()})
             result = eval_loader.dataset.eval(pred_result)
         return result
 

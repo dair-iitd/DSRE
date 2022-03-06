@@ -8,7 +8,8 @@ import argparse
 import logging
 import framework
 import encoder
-import model 
+import model1
+import model2 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--pretrain_path', default='bert-base-uncased',
@@ -64,10 +65,7 @@ def seed_everything(seed=1234):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
-import random
-MIN=0
-MAX=random.randint(0, 1000000)
-SEED=random.randint(MIN, MAX)
+
 seed_everything(seed=args.seed)
 
 # Some basic settings
@@ -75,7 +73,7 @@ root_path = '.'
 sys.path.append(root_path)
 if not os.path.exists('ckpt'):
     os.mkdir('ckpt')
-ckpt = 'ckpt/{}.pth.tar'.format(args.ckpt)
+ckpt = 'best_ckpts/{}.pth.tar'.format(args.ckpt)
 print(ckpt)
 if not (os.path.exists(args.train_file) and os.path.exists(args.val_file) and os.path.exists(args.test_file) and os.path.exists(args.rel2id_file)):
     raise Exception('--train_file, --val_file, --test_file and --rel2id_file are not specified or files do not exist. Or specify --dataset')
@@ -93,8 +91,11 @@ passage_encoder = encoder.PassageEncoder(
     mask_entity=args.mask_entity
 )
 # Define the model
-model_ = model.PassageAttention(passage_encoder, len(rel2id), rel2id)
-    
+if 'nyt' in args.test_file:
+	model_ = model2.PassageAttention(passage_encoder, len(rel2id), rel2id)
+else:
+	model_ = model1.PassageAttention(passage_encoder, len(rel2id), rel2id)
+
 framework_ = framework.PassageRE(
     model=model_,
     train_path=args.train_file,
@@ -113,10 +114,18 @@ if not args.only_test:
     framework_.train_model(args.metric)
 
 # Test
-framework_.load_state_dict(torch.load(ckpt)['state_dict'])
+framework_.load_state_dict(torch.load(ckpt, map_location='cuda:0')['state_dict'])
 result = framework_.eval_model(framework_.test_loader)
 # Print the result
-print(result)
+#print(result)
+#pred = result['pred']
+#with open("prediction.txt", "w") as f:
+#	for key in pred:
+#		f.write(key)
+#		preds = pred[key]['prediction']
+#		for p in preds:
+#			f.write("\t"+p)
+#		f.write("\n")
 print('Test set results for ckpt = ' +str(ckpt)+ ' are:')
 print("AUC: %.4f" % result['auc'])
 print("Average P@M: %.4f" % result['avg_p300'])
