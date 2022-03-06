@@ -1,6 +1,6 @@
-## Official Code for "A Simple, Strong and Robust Baseline for Distantly Supervised Relation Extraction"
+## Official Code for "PARE: A Simple and Strong Baseline for Monolingual and MultilingualDistantly Supervised Relation Extraction"
 
-![Diagram representing our model](./figure/model_diagram.png "Diagram representing our model")
+![Diagram representing our model](./figure/diagram.png "Diagram representing our model")
 
 Please follow the following steps (one by one) to reproduce the results presented in our pre-print:
 
@@ -54,6 +54,9 @@ sh train_wiki20m.sh
 ```
 sh train_disrex.sh
 ```
+### 4. Trained model checkpoint
+
+Trained model checkpoints on all four datasets are available at the following drive [link](https://drive.google.com/drive/folders/1vlMzXYiUlwvrCa5Du1O-iXzAl9sVOrIG?usp=sharing)
 
 ### Cite
 The codebase is a part of the pre-print [A Simple, Strong and Robust Baseline for Distantly Supervised Relation Extraction](https://arxiv.org/abs/2110.07415). If you use or extend our work, please cite the following paper:
