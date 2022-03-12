@@ -73,7 +73,7 @@ root_path = '.'
 sys.path.append(root_path)
 if not os.path.exists('ckpt'):
     os.mkdir('ckpt')
-ckpt = 'best_ckpts/{}.pth.tar'.format(args.ckpt)
+ckpt = 'ckpt/{}.pth.tar'.format(args.ckpt)
 print(ckpt)
 if not (os.path.exists(args.train_file) and os.path.exists(args.val_file) and os.path.exists(args.test_file) and os.path.exists(args.rel2id_file)):
     raise Exception('--train_file, --val_file, --test_file and --rel2id_file are not specified or files do not exist. Or specify --dataset')
