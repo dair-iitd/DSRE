@@ -91,6 +91,7 @@ passage_encoder = encoder.PassageEncoder(
     mask_entity=args.mask_entity
 )
 # Define the model
+# For NYT, use separate fully connected layers for NA and non-NA (a shared layer for all the non-NA labels)
 if 'nyt' in args.test_file:
 	model_ = model2.PassageAttention(passage_encoder, len(rel2id), rel2id)
 else:
