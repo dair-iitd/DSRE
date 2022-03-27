@@ -56,7 +56,12 @@ sh train_disrex.sh
 ```
 ### 4. Trained model checkpoint
 
-Trained model checkpoints on all four datasets are available at the following drive [link](https://drive.google.com/drive/folders/1vlMzXYiUlwvrCa5Du1O-iXzAl9sVOrIG?usp=sharing)
+[link](https://drive.google.com/drive/folders/1vlMzXYiUlwvrCa5Du1O-iXzAl9sVOrIG?usp=sharing)
+
+### 5. P-R Curves
+
+[link](https://drive.google.com/drive/folders/1uhsLbRYayQ86wS2L49syEkgiuYCErFEs?usp=sharing)
+
 
 ### Cite
 The codebase is a part of the pre-print [A Simple, Strong and Robust Baseline for Distantly Supervised Relation Extraction](https://arxiv.org/abs/2110.07415). If you use or extend our work, please cite the following paper:
