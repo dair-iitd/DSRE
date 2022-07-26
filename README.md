@@ -64,15 +64,14 @@ sh train_disrex.sh
 
 
 ### Cite
-The codebase is a part of the pre-print [A Simple, Strong and Robust Baseline for Distantly Supervised Relation Extraction](https://arxiv.org/abs/2110.07415). If you use or extend our work, please cite the following paper:
+The codebase is a part of the pre-print [PARE: A Simple and Strong Baseline for Monolingual and Multilingual Distantly Supervised Relation Extraction](https://aclanthology.org/2022.acl-short.38/). If you use or extend our work, please cite the following paper:
 ```
-@misc{rathore2021simple,
-      title={A Simple, Strong and Robust Baseline for Distantly Supervised Relation Extraction}, 
-      author={Vipul Rathore and Kartikeya Badola and Mausam and Parag Singla},
-      year={2021},
-      eprint={2110.07415},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
+@inproceedings{rathore2022pare,
+  title={PARE: A Simple and Strong Baseline for Monolingual and Multilingual Distantly Supervised Relation Extraction},
+  author={Rathore, Vipul and Badola, Kartikeya and Singla, Parag and others},
+  booktitle={Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers)},
+  pages={340--354},
+  year={2022}
 }
 ```
 
