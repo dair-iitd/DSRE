@@ -64,7 +64,7 @@ sh train_disrex.sh
 
 
 ### Cite
-The codebase is a part of the pre-print [PARE: A Simple and Strong Baseline for Monolingual and Multilingual Distantly Supervised Relation Extraction](https://aclanthology.org/2022.acl-short.38/). If you use or extend our work, please cite the following paper:
+The codebase is a part of the work [PARE: A Simple and Strong Baseline for Monolingual and Multilingual Distantly Supervised Relation Extraction](https://aclanthology.org/2022.acl-short.38/). If you use or extend our work, please cite the following paper:
 ```
 @inproceedings{rathore2022pare,
   title={PARE: A Simple and Strong Baseline for Monolingual and Multilingual Distantly Supervised Relation Extraction},
@@ -76,6 +76,6 @@ The codebase is a part of the pre-print [PARE: A Simple and Strong Baseline for 
 ```
 
 ### Acknowledgements
-The structure of our codebase closely follows that of [OpenNRE's](https://aclanthology.org/D19-3029.pdf). For more details on the format of the dataset's used, we refer the user to their [repository](https://github.com/thunlp/OpenNRE).
+Our codebase is built upon [OpenNRE's](https://aclanthology.org/D19-3029.pdf). For more details on the format of the dataset's used, we refer the user to their [repository](https://github.com/thunlp/OpenNRE).
 
 For more details on the DiS-ReX dataset, we refer the user to their [pre-print](https://arxiv.org/abs/2104.08655) as well as their [repository](https://github.com/dair-iitd/DiS-ReX).
